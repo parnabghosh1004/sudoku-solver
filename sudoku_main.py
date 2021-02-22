@@ -57,7 +57,7 @@ def put_soln(subd, unsolved_arr, solved_arr, font_color, font_path):
             fnt = ImageFont.truetype(font_path, int(img_h/1.4))
             font_w, font_h = draw.textsize(str(soln), font=fnt)
             draw.text(((img_w - font_w) / 2, (img_h - font_h) / 2 - img_h // 10),
-                      str(soln), fill=(font_color if len(img.shape) > 2 else 0), font=fnt)
+                      str(soln), fill=(font_color if len(sub.shape) > 2 else 0), font=fnt)
             cv2_img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
             img_solved.append(cv2_img)
     return img_solved
@@ -117,11 +117,7 @@ def captureFromWebcam():
     img_name = None
     while a:
         _,frame = cam.read()
-        cv2.imshow('sudoku solver',frame)
-        frame_gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-        extracted_img, corners, warped_img, original = extract_sudoku(
-        frame, frame_gray)
-        
+        cv2.imshow('capturing...',frame)
         k = cv2.waitKey(1)
         if k%256 == 27:
             break
