@@ -5,6 +5,9 @@ import tensorflow as tf
 from sudoku_algo import solve_board
 from PIL import Image, ImageDraw, ImageFont
 import time
+from tkinter import Tk, Label, Button, Canvas, Frame
+from tkinter import filedialog
+
 
 model = tf.keras.models.load_model('test_model.h5')
 
@@ -131,20 +134,53 @@ def captureFromWebcam():
     cv2.destroyAllWindows()
     return img_name    
 
-path = captureFromWebcam()
 
-if not path:
-    print("Escape hit, closing...")
-else:    
+def UploadFromDevice():
+    path = filedialog.askopenfilename()
     size = 540
     img = cv2.resize(cv2.imread(path), (size, size))
     final_img = solve_img(img.copy(), "red")
     if type(final_img).__module__ == np.__name__:    
         cv2.imshow("unsolved", img)
-        # cv2.imshow("solved", final_img)
+        cv2.imshow("solved", final_img)
         cv2.waitKey(0)
     else:
         print("cannot be solved")
+
+def OpenCamera():
+    path = captureFromWebcam()
+    if not path:
+        print("Escape hit, closing...")
+    else:    
+        size = 540
+        img = cv2.resize(cv2.imread(path), (size, size))
+        final_img = solve_img(img.copy(), "red")
+        if type(final_img).__module__ == np.__name__:    
+            cv2.imshow("unsolved", img)
+            cv2.imshow("solved", final_img)
+            cv2.waitKey(0)
+        else:
+            print("cannot be solved")
+
+root = Tk()
+
+canvas = Canvas(root,height=700,width=700,bg="#263D42")
+canvas.pack()
+
+frame = Frame(root, bg="white")
+
+frame.place(relwidth=0.8,relheight=0.8,relx=0.1,rely=0.1)
+
+label = Label(frame, text="SUDOKU SOLVER", fg="black",height=20)
+label.pack()
+
+button1 = Button(frame, text="Select File From Device", command=UploadFromDevice,padx=20,pady=10,fg="white",bg="#263D42")
+button2 = Button(frame, text="Upload From Camera", command=OpenCamera,padx=20,pady=10,fg="white",bg="#263D42")
+
+button1.pack()
+button2.pack()
+
+root.mainloop()
 
 cv2.destroyAllWindows()
 
