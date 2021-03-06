@@ -71,6 +71,7 @@ def find_corners_of_largest_polygon(img):
 
     # Return an array of all 4 points using the indices
     # Each point is in its own array of one coordinate
+
     return [polygon[top_left][0], polygon[top_right][0], polygon[bottom_right][0], polygon[bottom_left][0]]
 
 
@@ -133,40 +134,42 @@ def cut_from_rect(img, rect):
 
 
 def scale_and_centre(img, size, margin=0, background=0):
-    """Scales and centres an image onto a new background square."""
-    h, w = img.shape[:2]
+    try:
+        """Scales and centres an image onto a new background square."""
+        h, w = img.shape[:2]
 
-    def centre_pad(length):
-        """Handles centering for a given length that may be odd or even."""
-        if length % 2 == 0:
-            side1 = int((size - length) / 2)
-            side2 = side1
+        def centre_pad(length):
+            """Handles centering for a given length that may be odd or even."""
+            if length % 2 == 0:
+                side1 = int((size - length) / 2)
+                side2 = side1
+            else:
+                side1 = int((size - length) / 2)
+                side2 = side1 + 1
+            return side1, side2
+
+        def scale(r, x):
+            return int(r * x)
+
+        if h > w:
+            t_pad = int(margin / 2)
+            b_pad = t_pad
+            ratio = (size - margin) / h
+            w, h = scale(ratio, w), scale(ratio, h)
+            l_pad, r_pad = centre_pad(w)
         else:
-            side1 = int((size - length) / 2)
-            side2 = side1 + 1
-        return side1, side2
+            l_pad = int(margin / 2)
+            r_pad = l_pad
+            ratio = (size - margin) / w
+            w, h = scale(ratio, w), scale(ratio, h)
+            t_pad, b_pad = centre_pad(h)
 
-    def scale(r, x):
-        return int(r * x)
-
-    if h > w:
-        t_pad = int(margin / 2)
-        b_pad = t_pad
-        ratio = (size - margin) / h
-        w, h = scale(ratio, w), scale(ratio, h)
-        l_pad, r_pad = centre_pad(w)
-    else:
-        l_pad = int(margin / 2)
-        r_pad = l_pad
-        ratio = (size - margin) / w
-        w, h = scale(ratio, w), scale(ratio, h)
-        t_pad, b_pad = centre_pad(h)
-
-    img = cv2.resize(img, (w, h))
-    img = cv2.copyMakeBorder(img, t_pad, b_pad, l_pad,
-                             r_pad, cv2.BORDER_CONSTANT, None, background)
-    return cv2.resize(img, (size, size))
-
+        img = cv2.resize(img, (w, h))
+        img = cv2.copyMakeBorder(img, t_pad, b_pad, l_pad,
+                                r_pad, cv2.BORDER_CONSTANT, None, background)
+        return cv2.resize(img, (size, size))
+    except:
+        return img
 
 def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
     """
@@ -255,7 +258,6 @@ def get_digits(img, squares, size):
     """Extracts digits from their cells and builds an array"""
     digits = []
     img = pre_process_image(img.copy(), skip_dilate=True)
-#    cv2.imshow('img', img)
     for square in squares:
         digits.append(extract_digit(img, square, size))
     return digits
@@ -270,4 +272,4 @@ def extract_sudoku(original, original_gray):
     digits = get_digits(cropped2, squares, 28)
     final_image = show_digits(digits)
 
-    return final_image, corners, cropped1, original
+    return final_image, digits,corners, cropped1, original

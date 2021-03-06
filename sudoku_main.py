@@ -8,26 +8,29 @@ import time
 from tkinter import Tk, Label, Button, Canvas, Frame
 from tkinter import filedialog
 
-
 model = tf.keras.models.load_model('test_model.h5')
-
 
 def predict_digit(image):
     image = cv2.resize(image, (28, 28))
     image = image.reshape(1, 28, 28, 1)
     image = image/255
-    pred = model.predict_classes(image)
-    return pred[0]
+    pred = model.predict(image)
+    pred = pred[0][1:]
+    if (pred[pred.argmax()]) > 0.8:
+        return pred.argmax()
+    return -1
 
-
-def extract_digits(sudoku):
+def extract_digits(sudoku,digits):
     sudoku = cv2.resize(sudoku, (450, 450))
     grid = np.zeros([9, 9])
     for i in range(9):
         for j in range(9):
-            image = sudoku[i*50:(i+1)*50, j*50:(j+1)*50]
-            if image.sum() > 80000:
-                grid[i][j] = predict_digit(image)
+            if digits[i*9 + j].sum() > 10:
+                image = sudoku[i*50:(i+1)*50, j*50:(j+1)*50]
+                predict = predict_digit(image)
+                if predict == -1:
+                    return None
+                grid[i][j] = predict + 1                       
     return grid.astype(int)
 
 
@@ -63,22 +66,6 @@ def put_soln(subd, unsolved_arr, solved_arr, font_color, font_path):
     return img_solved
 
 
-def stitch_image(img_arr):
-
-    rows = {}
-    for i in range(9):
-        row_img = img_arr[i*9]
-        for j in range(1, 9):
-            row_img = np.concatenate((row_img, img_arr[i*9+j]), axis=1)
-        rows[i] = row_img
-    solved_img = rows[0]
-    for key, value in rows.items():
-        if(key != 0):
-            solved_img = np.concatenate((solved_img, value), axis=0)
-
-    return solved_img
-
-
 def inverse_perspective(img, dst_img, pts):
     pts_source = np.array([[0, 0], [img.shape[1] - 1, 0], [img.shape[1] - 1, img.shape[0] - 1], [0, img.shape[0] - 1]],
                           dtype='float32')
@@ -88,95 +75,85 @@ def inverse_perspective(img, dst_img, pts):
     dst_img = dst_img + warped
     return dst_img
 
+def simulate_solve(img_arr,warped_img,original,corners):
+    for i,img in enumerate(img_arr):
+        warped_img[(i//9)*img.shape[0] : (i//9+1)*img.shape[0],(i%9)*img.shape[0] : (i%9+1)*img.shape[0],:] = img
+        warped_inverse = inverse_perspective(warped_img, original, np.array(corners))
+        cv2.imshow('solved',warped_inverse)
+        cv2.waitKey(50)
+    return warped_inverse
 
-def solve_img(img, color):
-    img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-
-    extracted_img, corners, warped_img, original = extract_sudoku(
-        img, img_gray)
-
-    board = extract_digits(extracted_img)
+def solve_img(img, color,camera=False):
+    img_gray = cv2.cvtColor(img.copy(), cv2.COLOR_RGB2GRAY)
+    extracted_img, digits,corners, warped_img, original = extract_sudoku(img.copy(), img_gray)
+    board = extract_digits(extracted_img,digits)
+    print(board)
+    if board is None or not np.count_nonzero(board):
+        return None
     unsolved_board = board.copy()
     if(not solve_board(board)):
         return None
 
     subd = subdivide(warped_img)
-    img_solved = put_soln(subd, unsolved_board, board,
-                          color, "arial.ttf")
-
-    stitched_image = stitch_image(img_solved)
-    warped_inverse = inverse_perspective(
-        stitched_image, original, np.array(corners))
+    warped_img = cv2.resize(warped_img,(9*subd[0].shape[0],9*subd[0].shape[0]))
+    img_solved = put_soln(subd, unsolved_board, board,color, "arial.ttf")
     
-    img = warped_img
-    return warped_inverse
+    if not camera:
+        cv2.imshow("unsolved",img)
+
+    return simulate_solve(img_solved,warped_img,original,corners)
+
 
 def captureFromWebcam():
     cam = cv2.VideoCapture(0)
     a = True
-    img_name = None
     while a:
         _,frame = cam.read()
-        cv2.imshow('capturing...',frame)
+        cv2.imshow('sudoku',frame)
+        final_img = solve_img(frame,'red',True)
+        if final_img is None:
+            print("cannot be solved")
+        else:
+            cv2.destroyAllWindows()
+            cv2.imshow("sudoku", final_img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
         k = cv2.waitKey(1)
         if k%256 == 27:
             break
-        elif k%256 == 32:
-            img_name = 'sudoku-webcam.png'
-            cv2.imwrite(img_name, frame)
-            print('image captured')
-            break
     cam.release()
-    cv2.destroyAllWindows()
-    return img_name    
-
+    cv2.destroyAllWindows()    
 
 def UploadFromDevice():
     path = filedialog.askopenfilename()
+    if path is None:
+        print("select a valid file")
+        return
     size = 540
     img = cv2.resize(cv2.imread(path), (size, size))
     final_img = solve_img(img.copy(), "red")
     if type(final_img).__module__ == np.__name__:    
-        cv2.imshow("unsolved", img)
         cv2.imshow("solved", final_img)
         cv2.waitKey(0)
     else:
         print("cannot be solved")
 
 def OpenCamera():
-    path = captureFromWebcam()
-    if not path:
-        print("Escape hit, closing...")
-    else:    
-        size = 540
-        img = cv2.resize(cv2.imread(path), (size, size))
-        final_img = solve_img(img.copy(), "red")
-        if type(final_img).__module__ == np.__name__:    
-            cv2.imshow("unsolved", img)
-            cv2.imshow("solved", final_img)
-            cv2.waitKey(0)
-        else:
-            print("cannot be solved")
+    captureFromWebcam()
 
 root = Tk()
 
 canvas = Canvas(root,height=700,width=700,bg="#263D42")
 canvas.pack()
-
 frame = Frame(root, bg="white")
-
 frame.place(relwidth=0.8,relheight=0.8,relx=0.1,rely=0.1)
-
 label = Label(frame, text="SUDOKU SOLVER", fg="black",height=20)
 label.pack()
-
 button1 = Button(frame, text="Select File From Device", command=UploadFromDevice,padx=20,pady=10,fg="white",bg="#263D42")
 button2 = Button(frame, text="Upload From Camera", command=OpenCamera,padx=20,pady=10,fg="white",bg="#263D42")
-
 button1.pack()
 button2.pack()
 
 root.mainloop()
-
 cv2.destroyAllWindows()
 
