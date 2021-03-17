@@ -68,8 +68,13 @@ For better understanding of project you can [refer](/SudokuSolver.docx)
  *  [Parnab Ghosh](https://www.linkedin.com/in/parnab-ghosh-57326118b/)
  *  [Johnit Kujur]()
  *  [Shreyas Kolhatkar]()
+ 
+ ## Mentors
+    1. Bhuvan Jhamb
+    2. Anuj Tiwari 
+    3. Apoorva Dinesh Singh
   
- ## References :
+ ## References 
  
  * [Opencv Python Official Documentation](https://docs.opencv.org/master/d6/d00/tutorial_py_root.html)
  * [Tensorflow Official Documentation for python](https://www.tensorflow.org/api_docs)
