@@ -70,9 +70,9 @@ For better understanding of project you can [refer](/SudokuSolver.docx)
  *  [Shreyas Kolhatkar]()
  
  ## Mentors
-    1. Bhuvan Jhamb
-    2. Anuj Tiwari 
-    3. Apoorva Dinesh Singh
+   * [Bhuvan Jhamb](https://www.linkedin.com/in/bhuvanjhamb/)
+   * [Anuj Tiwari](https://www.linkedin.com/in/anuj-tiwari-mnnit/)
+   * [Apoorva Dinesh Singh](https://www.linkedin.com/in/apoorva-singh-0111/)
   
  ## References 
  
