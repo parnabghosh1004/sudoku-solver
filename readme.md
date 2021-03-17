@@ -65,7 +65,7 @@ For better understanding of project you can [refer](/SudokuSolver.docx)
  ##  Contacts
  
  *  [Pravesh Pandey](https://www.linkedin.com/in/pravesh25/)
- *  [Pranab Goash](https://www.linkedin.com/in/parnab-ghosh-57326118b/)
+ *  [Parnab Ghosh](https://www.linkedin.com/in/parnab-ghosh-57326118b/)
  *  [Johnit Kujur]()
  *  [Shreyas Kolhatkar]()
   
