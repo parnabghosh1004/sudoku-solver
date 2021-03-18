@@ -60,7 +60,7 @@ Like many others, you also must have played the sudoku game at some point in you
  
  # Contributing
 If you want to contribute check the [CONTRIBUTING.md](/CONTRIBUTING.md)
-For better understanding of project you can [refer](/SudokuSolver.docx)
+For better understanding of project you can [refer](/code_help.md)
  
  ##  Contacts
  
