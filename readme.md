@@ -9,8 +9,8 @@ Like many others, you also must have played the sudoku game at some point in you
 
 <table>
   <tr>
-    <td align="center" >Realtime Solving</td>
-     <td align="center" >Gallery Solving</td>
+    <td align="center" >Static Solving</td>
+     <td align="center" >Realtime Solving</td>
     </tr>
   <tr>
 <td><img src="https://user-images.githubusercontent.com/58443282/111488377-2eb21e00-875f-11eb-8b44-de148b0752fd.gif" width="500"></td>
