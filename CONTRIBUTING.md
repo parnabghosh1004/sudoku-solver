@@ -34,4 +34,4 @@ After reporting you should aim to answer questions or clarifications as this hel
 
 
 ## Donations
-If you want you can donate some bucks [here]().
+If you want you can donate some bucks [here](https://www.paypal.com/paypalme/pravesh25pandey).
