@@ -66,8 +66,8 @@ For better understanding of project you can [refer](/code_help.md)
  
  *  [Pravesh Pandey](https://www.linkedin.com/in/pravesh25/)
  *  [Parnab Ghosh](https://www.linkedin.com/in/parnab-ghosh-57326118b/)
- *  [Johnit Kujur]()
- *  [Shreyas Kolhatkar]()
+ *  [Johnit Kujur](https://www.linkedin.com/in/johnit-kujur-972b81206/)
+ *  [Shreyas Kolhatkar](https://www.linkedin.com/in/shreyas-kolhatkar/)
  
  ## Mentors
    * [Bhuvan Jhamb](https://www.linkedin.com/in/bhuvanjhamb/)
