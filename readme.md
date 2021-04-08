@@ -1,6 +1,6 @@
 # Sudoku Solver - #{Official}
 
-## About
+## About                                                                 <img align="right" src="https://visitor-badge.glitch.me/badge?page_id=pravesh-pandey.sudoku-solver"/>
 Like many others, you also must have played the sudoku game at some point in your life. It comes with a newspaper like The Times of India, The Hindu, etc., or at the back of our notebook. Everyone knows how to solve the game, but we have to scratch our heads for hours to get to the correct answer. Weprediction model will learn how to build a python script to take a sudoku image and display the solved image.
 
 
